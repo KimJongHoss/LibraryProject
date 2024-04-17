@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.mapper.market">
+	
+	<select id="list" parameterType="String" resultType="MarketListDTO">
+		select marketid, marketnum, market.isbncode, book_name, introduction, published_date, author, image
+		from market
+		join book
+		on market.isbncode = book.isbncode
+		where userid = #{userid}
+	</select>
+	
+	<delete id="delete" parameterType="Map">
+		delete from market
+		where marketid in
+		<foreach collection="ids" item="marketid" separator="," open="(" close=")" >
+		#{marketid}
+		</foreach>
+	</delete>
+	
+	<insert id="ss" parameterType="LoanDetailDTO">
+		insert into
+		market (userid, loan_date, return_date, actual_return_date, extend, isbncode, library_code, Key)
+		values (#{userid}, #{loan_date}, #{return_date}, #{actual_return_date}, #{extend}, #{isbncode}, #{library_code}, #{Key})
+	</insert>
+	
+	<select id="selectisbncode" parameterType="Map" resultType="String">
+		select isbncode
+		from market
+		where
+		<foreach collection="ids" item="marketid" separator="or">
+		marketid = ${marketid}
+		</foreach>
+	</select>
+	
+	<update id="loanadd" parameterType="Map">
+		<foreach collection="loan" item="isbncode" separator=";">
+		update book_list
+	    set loan_available = loan_available - 1, loan_status = loan_status + 1
+	    where library_code = 1 and isbncode = #{isbncode}
+		</foreach>
+	</update>
+	
+	<select id="available" parameterType="Map" resultType="int">
+		select count(*)
+		from book_list
+		where library_code = 1 and loan_available > 0 and
+		<foreach collection="isbncode" item="isbncode" separator="or">
+		isbncode = #{isbncode}
+		</foreach>
+	</select>
+	
+	<select id="count" resultType="Integer">
+		select count(*) from loan_detail
+	</select>
+	
+	<insert id="marketdetail" parameterType="Map">
+		insert into
+		loan_detail (loan_detail_num,userid, loan_date, return_date, extend, isbncode, library_code) 
+		values (#{loan_detail_num}, #{userid}, curdate(), date_add(curdate(),interval +7 day), 0, #{isbncode}, 1)
+	</insert>
+	
+	<insert id="marketloan" parameterType="Map">
+		insert
+		into loan(userid, isbncode, library_code, loan_detail_num) 
+		values (#{userid}, #{isbncode}, 1, #{loan_detail_num})
+	</insert>
+	
+</mapper>

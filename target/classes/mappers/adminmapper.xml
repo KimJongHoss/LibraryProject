@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.adminmapper">
+	
+	<!-- 도서 관리 -->
+	<!--  도서 정보 추가  -->
+	<insert id="insert" parameterType="BookDTO"> 
+		insert into book 
+		(isbncode, book_name, introduction, published_date, author, image, etc) 
+		values (#{isbncode}, #{book_name}, #{introduction}, #{published_date}, #{author}, #{image}, #{etc}) 
+	</insert>
+	<!--  도서관 소장 도서추가  -->
+	<insert id="libraryBookInsert" parameterType="BookJoinDTO"> 
+		insert into book_list 
+		(isbncode, library_code, loan_available, loan_status, etc) 
+		values (#{isbncode}, #{library_code}, #{loan_available}, '0', #{etc}) 
+	</insert>
+	<!--  도서 정보 수정  -->
+	<update id="update" parameterType="BookJoinDTO"> 
+		update book 
+		set book_name=#{book_name}, introduction=#{introduction}, published_date=#{published_date}, author=#{author}, image=#{image}, etc=#{etc} 
+		where isbncode=#{isbncode} 
+	</update>
+	<!--  도서관 소장 도서수정  -->
+	<update id="libraryBookUpdate" parameterType="BookJoinDTO"> 
+		update book_list 
+		set isbncode=#{isbncode}, library_code=#{library_code}, loan_available=#{loan_available}, loan_status=#{loan_status} 
+		where book_list_num=#{book_list_num} 
+	</update>
+	<!--  도서 정보 삭제  -->
+	<delete id="delete" parameterType="String"> 
+		delete from book 
+		where isbncode=#{isbncode} 
+	</delete>
+	<!--  도서관 소장 도서 삭제  -->
+	<delete id="libraryBookDelete" parameterType="int"> 
+		delete from book_list 
+		where book_list_num=#{book_list_num} 
+	</delete>
+	<!--  도서 대출 리스트  -->
+	<select id="loanList" parameterType="hashMap" resultType="LoanDTO"> 
+		select loan_num, userid, isbncode, library.library_code, loan_detail_num, name 
+		from loan, library 
+		where loan.library_code = library.library_code
+		limit #{displayPost}, #{postNum} 
+	</select>
+	<!--  대출 상세  -->
+	<select id="loanDetailList" parameterType="hashMap" resultType="LoanjoinDTO"> 
+		select loan_detail_num, userid, loan_date, return_date, actual_return_date, extend, isbncode, deliveryid, loan_detail.library_code, name 
+		from loan_detail, library where loan_detail_num = #{loan_detail_num} and library.library_code = loan_detail.library_code 
+	</select>
+	<!--  도서 반납  -->
+	<update id="returnbook" parameterType="int"> 
+		update loan_detail 
+		set actual_return_date = curdate() 
+		where loan_detail_num = #{loan_detail_num} 
+	</update>
+	<!--  도서 추가 isbncode 중복확인  -->
+	<select id="librarianisbncodeCheck" parameterType="String" resultType="int"> 
+		select count(*) 
+		from book 
+		where isbncode = #{isbncode} 
+	</select>
+	<!-- 대출리스트 검색 -->
+	<select id="loanListSearch" parameterType="hashMap" resultType="LoanDTO">
+		select loan_num, userid, isbncode, library.library_code, loan_detail_num, name
+		from loan, library
+		where userid like CONCAT('%',#{keyword},'%') 
+		and loan.library_code = library.library_code
+		limit #{displayPost}, #{postNum} 
+	</select>
+	<!-- 대출검색 수량 -->
+	<select id="loanSearchCount" parameterType="String" resultType="int">
+		select count(*) from loan
+		where userid like CONCAT('%',#{keyword},'%')
+	</select>
+	<!-- 도서정보 목록 -->
+	<select id="bookList" parameterType="hashMap" resultType="BookDTO">
+		select * from book
+		limit #{displayPost}, #{postNum}
+	</select>
+	<!-- 도서정보 총수 -->
+	<select id="bookInfoCount" resultType="int">
+		select count(*) from book
+	</select>
+	<!-- 도서정보 검색 -->
+	<select id="bookInfoSearch" parameterType="hashMap" resultType="BookDTO">
+		select * from book
+		where book_name like CONCAT('%',#{keyword},'%') 
+		limit #{displayPost}, #{postNum}
+	</select>
+	<!-- 도서정보 검색 총수 -->
+	<select id="bookInfoSearchCount" parameterType="String" resultType="int">
+		select count(*) from book
+		where book_name like concat('%',#{keyword},'%')
+	</select>
+	<!-- 도서정보 수정용 정보 -->
+	<select id="bookupdatebefore" parameterType="String" resultType="BookDTO">
+		select * from book
+		where isbncode = #{isbncode}
+	</select>
+	<!-- 도서 목록 추가 도서 중복 확인 -->
+	<select id="librarianListCheck" parameterType="hashMap" resultType="int">
+		select count(*) from book_list
+		where isbncode = #{isbncode} and library_code = #{library_code}
+	</select>
+	<!-- 도서 목록 등록 확인 -->
+	<select id="bookListCheck" parameterType="String" resultType="int">
+		select count(*) from book_list
+		where isbncode = #{isbncode}
+	</select>
+	
+	
+	<!-- 도서관 관리 -->
+	<!-- 도서관 전체 조회 -->
+	<select id="librarylist" resultType="LibraryBean">
+		select * from library
+	</select>
+	
+	<!-- 도서관 선택 조회 -->
+	<select id="librarySelectOne" resultType="LibraryBean">
+		select * from library 
+		where library_code = #{library_code}
+	</select>
+	
+	<!-- 도서관 추가 -->
+	<insert id="libraryInsert" parameterType="LibraryBean">
+		insert into library 
+		(name, address)
+		values(#{name}, #{address})
+		
+	</insert>
+	
+	<!-- 도서관 정보 수정 -->
+	<update id="libraryUpdate" parameterType="LibraryBean">
+		update library set 
+		name=#{name}, 
+		address=#{address}
+		where library_code=#{library_code}
+	</update>
+	
+	<!-- 도서관 정보 삭제 -->
+	<delete id="libraryDelete" parameterType="LibraryBean">
+		delete from library 
+		where library_code=#{library_code}
+	</delete>
+	
+	<!-- 사서 관리 -->
+	<!-- 사서 전체 조회 -->
+	<select id="librarianlist" resultType="LibrarianBean">
+		select * from librarian
+	</select>
+	
+	<!-- 사서 선택 조회 -->
+	<select id="librarianSelectOne" resultType="LibrarianBean">
+		select * from librarian
+		where id = #{id}
+	</select>
+	
+	<!-- 사서 추가 -->
+	<insert id="librarianInsert" parameterType="LibrarianBean">
+		insert into librarian
+		(id, password, name, gender, address, birth, email, phone, etc)
+		values(#{id}, #{password}, #{name}, #{gender}, #{address}, #{birth}, #{email}, #{phone}, "내가바로사서다")
+	</insert>
+	
+	<!-- 사서 정보 수정 -->
+	<update id="librarianUpdate" parameterType="LibrarianBean">
+		update librarian set 
+		id=#{id}, password=#{password}, name=#{name}, gender=#{gender}, address=#{address}, birth=#{birth}, email=#{email}, phone=#{phone}, etc=#{etc}
+		where id=#{id}
+	</update>
+	
+	<!-- 사서 정보 삭제 -->
+	<delete id="librarianDelete" parameterType="LibrarianBean">
+		delete from librarian
+		where id=#{id}
+	</delete>
+	
+	<select id="idCheck" parameterType="String" resultType="Integer">
+  		select count(*)
+  		from librarian
+  		where id = #{id}
+  	</select>
+</mapper>
