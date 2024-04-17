@@ -8,6 +8,7 @@
 ![joblist1](https://github.com/KimJongHoss/LibraryProject/assets/162934165/39b2dd39-19b7-4d56-acc8-9ddbbbf04f1d)
 ![joblist2](https://github.com/KimJongHoss/LibraryProject/assets/162934165/2afc27f3-8829-4bd0-98d5-f5d58a45b207)
 
+# 기능 목록
 
 - [x] 정회원 전환 신청 기능 (회원이 이용하는 기능)
 - [x] 블랙리스트 구제 신청 기능 (회원이 이용하는 기능)
