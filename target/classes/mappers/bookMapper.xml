@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.bookMapper">
+	<!-- 보유한 도서 총수 -->
+	<select id="count" resultType="int">
+		select count(*) from book_list
+	</select>
+	<!-- 도서 정보보기 -->
+	<select id="allList" parameterType="hashMap" resultType="BookJoinDTO">
+		select book_list.isbncode, book_list_num, library.library_code, name, book_name, introduction, published_date, author, image, book.etc, loan_available, loan_status
+		from book, book_list,library
+		where book_list.isbncode = book.isbncode and book_list.library_code = library.library_code
+		limit #{displayPost}, #{postNum}
+	</select>
+	<!-- 도서 상세보기 -->
+	<select id="detail" parameterType="hashMap" resultType="BookJoinDTO">
+		select book_list.isbncode, book_list_num, library.library_code, name, book_name, introduction, published_date, author, image, book.etc, loan_available, loan_status
+		from book, book_list, library 
+		where book_list.isbncode = book.isbncode and book_list.library_code = library.library_code and book.isbncode = #{isbncode} and library.library_code = #{library_code}
+	</select>
+	<!-- 도서 검색 -->
+	<select id="search" parameterType="hashMap" resultType="BookJoinDTO">
+		select book_list.isbncode, book_list_num, library.library_code, name, book_name, introduction, published_date, author, image, book.etc, loan_available, loan_status 
+		from book, book_list, library
+		where book_name like CONCAT('%',#{keyword},'%')
+		and book_list.isbncode = book.isbncode and book_list.library_code = library.library_code 
+		limit #{displayPost}, #{postNum}
+	</select>
+	<!-- 도서 대출 총 수 -->
+	<select id="loanCount" resultType="int">
+		select count(*) from loan
+	</select>
+	<!-- //도서 대출(상세)등록-->
+	<insert id="loan_Detail" parameterType="LoanJoinDTO">
+		insert 
+		into loan_detail(loan_detail_num, userid, loan_date, return_date, extend, isbncode, library_code) 
+		values (#{loan_detail_num}, #{userid}, curdate(), date_add(curdate(),interval +7 day), '0', #{isbncode}, #{library_code})
+	</insert>
+	<!-- 도서 대출(목록)등록 -->
+	<insert id="loan" parameterType="LoanJoinDTO">
+		insert
+		into loan(userid, isbncode, library_code, loan_detail_num) 
+		values (#{userid}, #{isbncode}, #{library_code}, #{loan_detail_num})
+	</insert>
+	<!-- 도서 대출/반납증 -->
+	<select id="loanReturnCert" parameterType="int" resultType="LoanJoinDTO">
+		select loan_detail_num, userid, loan_date, return_date, isbncode, library_code
+		from loan_detail 
+		where loan_detail_num = #{loan_detail_num}
+	</select>
+	<!-- 도서 대출 개수 수정 -->
+	<update id="bookListStatusUpdate" parameterType="hashMap">
+		update book_list
+		set loan_status = #{loan_status}
+		where book_list_num = #{book_list_num}
+	</update>
+	
+	<!--  도서 검색 총수  -->
+	<select id="bookSearchCount" parameterType="String" resultType="int">
+	select count(book_list.isbncode) 
+	from book_list, book where book_name 
+	like CONCAT('%',#{keyword},'%') and book_list.isbncode = book.isbncode
+	</select>
+	
+	<insert id="marketin" parameterType="Map">
+		insert into
+		market (userid, marketnum, isbncode)
+		values (#{userid}, 1, #{isbncode})
+	</insert>
+	
+	<select id="bookselect" parameterType="Map" resultType="Integer">
+		select count(*)
+		from book_list
+		where library_code = 1 and isbncode = #{isbncode} and loan_available > 0
+	</select>
+	
+	<select id="marketselect" parameterType="Map" resultType="Integer">
+		select count(*)
+		from market
+		where isbncode = #{isbncode} and userid = #{userid}
+	</select>
+</mapper>

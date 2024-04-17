@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- 웹 애플리케이션의 캐시 설정 -->
+    <Resources cachingAllowed="true" cacheMaxSize="100000" />
+</Context>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.librarianmapper">
+   <!-- 도서 전체 조회 -->
+	<select id="booklist" resultType="BookDTO">
+		select * from book
+	</select>
+	
+	<!-- 정회원 전환 신청 목록 조회 -->
+	<select id="toRegularlist" resultType="toRegularBean">
+		select apply_code,apply_reason,write_date,etc,userid,useremail
+		 from toregular
+		 where process=0
+	</select>
+	
+	<!-- 정회원 전환 신청 선택 조회 -->
+	<select id="toRegularSelectOne" resultType="toRegularBean">
+		select apply_code,apply_reason,write_date,etc,userid,useremail
+		 from toregular
+		where apply_code=#{apply_code}
+	</select>
+	
+	<!-- 정회원 전환 신청 수락-->
+	<update id="toRegularOk" parameterType="toRegularBean">
+		update toregular set 
+		process=1, 
+		rankid=20
+		where apply_code=#{apply_code}
+	</update>
+	
+	<!-- 정회원 rankid 정보 20으로! -->
+	<update id="toRegularLevelUp" parameterType="String">
+		update member set
+		rankid=20
+		where userid=#{userid}
+	</update>
+	
+	<!-- 정회원 전환 신청 거절-->
+	<update id="toRegularNo" parameterType="toRegularBean">
+		update toregular set 
+		process=1,
+		rankid=10
+		where apply_code=#{apply_code}
+	</update>
+	
+	<!-- 연체 구제 신청 목록 조회 -->
+	<select id="saveOverduelist" resultType="saveOverdueBean">
+		select save_code,reason,write_date,etc,overdueid,loan_detail_num,userid
+		 from save_overdue
+		 where process=0
+	</select>
+	
+	<!-- 연체 구제 신청 선택 조회 -->
+	<select id="saveOverdueSelectOne" resultType="saveOverdueBean">
+		select save_code,reason,write_date,etc,overdueid,loan_detail_num,userid
+		 from save_overdue
+		where save_code=#{save_code}
+	</select>
+	
+	<!-- 연체 구제 신청 수락-->
+	<update id="saveOverdueOk" parameterType="saveOverdueBean">
+		update save_overdue set 
+		process=1, 
+		rankid=10
+		where save_code=#{save_code}
+	</update>
+	
+	<!-- 준회원 rankid 정보 10으로! -->
+	<update id="saveOverdueLevelUp" parameterType="String">
+		update member set
+		rankid=10
+		where userid=#{userid}
+	</update>
+	
+	<!-- 연체 테이블 비고 값 1증가 -->
+	<update id="howManyOverdue" parameterType="String">
+		update overdue set
+		rankid=10,
+		overdueetc=concat(overdueetc+1),
+		overdueavailable=1
+		where userid=#{userid}
+	</update>
+	
+	<!-- 연체 구제 신청 거절-->
+	<update id="saveOverdueNo" parameterType="saveOverdueBean">
+		update save_overdue set 
+		process=1,
+		rankid=50
+		where save_code=#{save_code}
+	</update>
+	
+	<!-- 블랙리스트 구제 신청 목록 조회 -->
+	<select id="saveBlacklistlist" resultType="saveBlacklistBean">
+		select save_code,reason,write_date,etc,userid,useremail
+		 from save_blacklist
+		 where process=0
+	</select>
+	
+	<!-- 블랙리스트 구제 신청 선택 조회 -->
+	<select id="saveBlacklistSelectOne" resultType="saveBlacklistBean">
+		select save_code,reason,write_date,etc,userid,useremail
+		 from save_blacklist
+		where save_code=#{save_code}
+	</select>
+	
+	<!-- 블랙리스트 구제 신청 수락-->
+	<update id="saveBlacklistOk" parameterType="saveBlacklistBean">
+		update save_blacklist set 
+		process=1, 
+		rankid=10
+		where save_code=#{save_code}
+	</update>
+	
+	<!-- 준회원 rankid 정보 10으로! -->
+	<update id="saveBlacklistLevelUp" parameterType="String">
+		update member set
+		rankid=10
+		where userid=#{userid}
+	</update>
+	
+	<!-- 블랙리스트 구제 신청 거절-->
+	<update id="saveBlacklistNo" parameterType="saveBlacklistBean">
+		update save_blacklist set
+		process=1,
+		rankid=40
+		where save_code=#{save_code}
+	</update>
+	
+	<!-- Q&A Answer -->
+	<!--  전체목록   -->
+		<select id="answerListAll" resultType="QuestionDTO">
+			select * from question_board
+			where etc=0
+		</select>
+		
+	<!-- 선택목록 -->	
+		<select id="answerListOne" resultType="AnswerBean">
+			select * from 
+			answer_board
+			where question_num=#{question_num}
+		</select>
+		
+	<!-- Q&A 답변하기 -->
+	<update id="answerClear" parameterType="String">
+		update question_board set
+		etc=1
+		where question_num=#{question_num}
+	</update>
+	
+	<insert id="answerInsert" parameterType="AnswerBean">
+		insert into answer_board
+		(answer_num, question_num, writer, content, regdate)
+		values(#{question_num}, #{question_num}, #{writer}, #{content}, CURDATE())
+		
+	</insert>
+	
+	<!-- 공지사항 관리 -->
+	<!-- 공지사항 추가 -->
+	<insert id="noticeAdd" parameterType="NoticeDTO">
+		insert into notice_board
+		(writer, title, content, regdate, count)
+		values(#{writer}, #{title}, #{content}, CURDATE(), 0)
+	</insert>
+	
+	<!-- 공지사항 수정 -->
+	<update id="noticeUpdate" parameterType="NoticeDTO">
+		update notice_board set 
+		writer=#{writer}, title=#{title}, content=#{content}
+		where notice_num=#{notice_num}
+	</update>
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="noticeDelete" parameterType="NoticeDTO">
+		delete from notice_board
+		where notice_num=#{idnotice_num}
+	</delete>
+	
+	<!-- 상호대차 신청 관리 -->
+	<!-- 상호대차 신청 목록 조회 -->
+	<select id="interlibListAll" resultType="InterBean">
+		select interid,library_code,userid,username,libraryname,etc,isbncode
+		 from inter
+		 where etc=0
+	</select>
+	
+	<!-- 상호대차 신청 선택 조회 -->
+	<select id="interlibListOne" resultType="InterBean">
+		select interid,library_code,userid,username,libraryname,etc,isbncode
+		 from inter
+		where interid=#{interid}
+	</select>
+	
+	<!-- 상호대차 신청 수락-->
+	<update id="interlibOk" parameterType="InterBean">
+		update inter set 
+		etc=1
+		where interid=#{interid}
+	</update>
+	
+	<!-- 상호대차 신청 거절-->
+	<update id="interlibNo" parameterType="InterBean">
+		update inter set 
+		etc=2
+		where interid=#{interid}
+	</update>
+	
+	
+	<!-- 배송 신청 관리 -->
+	<!-- 배송 신청 목록 조회 -->
+	<select id="deliverylist" resultType="DeliveryBean">
+		select deliveryid,username,usernumber,useraddress,day,status,messages
+		 from delivery
+		 where status='접수완료'
+	</select>
+	
+	<!-- 배송 신청 선택 조회 -->
+	<select id="deliverySelectOne" resultType="DeliveryBean">
+		select deliveryid,username,usernumber,useraddress,day,status,messages,library_code,isbncode
+		 from delivery
+		where deliveryid=#{deliveryid}
+	</select>
+	
+	<!-- 배송 신청 수락-->
+	<update id="deliveryOk" parameterType="DeliveryBean">
+		update delivery set 
+		status='배송 신청 수락' 
+		where deliveryid=#{deliveryid}
+	</update>
+	
+	<!-- 배송 신청 거절-->
+	<update id="deliveryNo" parameterType="DeliveryBean">
+		update delivery set 
+		status='배송 신청 거절' 
+		where deliveryid=#{deliveryid}
+	</update>
+	
+</mapper>

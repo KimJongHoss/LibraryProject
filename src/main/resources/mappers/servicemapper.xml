@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.serviceMapper">
+		<!-- 상호대차 값 저장 -->
+		<insert id="deliveryinsert" parameterType="DeliveryBean">
+			INSERT INTO delivery 
+			(username, usernumber, useraddress, day, status, messages, library_code, isbncode, etc)
+			values
+			(#{username}, #{usernumber}, #{useraddress}, CURDATE(), '접수완료', #{messages}, #{library_code}, #{isbncode}, #{etc});
+		</insert>
+			 
+		<insert id="interinsert" parameterType="InterBean">
+		    insert into inter (library_code, isbncode, userid, username, libraryname, etc)
+    		values (#{library_code}, #{isbncode}, #{userid}, #{username}, #{libraryname}, 0);
+		</insert>
+
+</mapper>
