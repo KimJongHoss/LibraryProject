@@ -82,6 +82,7 @@ public class LibrarianServiceImpl implements LibrarianService{
 		return librarianDao.toRegularNo(tb);
 	}
 
+//	연체구제신청 Service
 	@Override
 	public List<saveOverdueBean> saveOverduelist() {
 		// TODO Auto-generated method stub
