@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="kr.co.dong.boardMapper">
+<!-- 자유게시판-->
+	<!--  글 추가하는 SQL "insert" -->
+		<insert id="freeAndregister" parameterType="FreeDTO"> 
+			insert into free_board(title, content, writer, regdate, count) 
+			values (#{title}, #{content}, #{writer}, now(), 0) 
+		</insert>
+		
+	<!--  전체목록   -->
+		<select id="freeAndlist" resultType="FreeDTO">
+			select * from free_board
+			order by free_board_num desc
+		</select>
+		
+	<!--  조회수 1 증가하는 SQL "count" -->
+		<update id="freeAndcount">
+			update free_board
+			set count = count + 1
+			where free_board_num = #{free_board_num}
+		</update>
+		
+	<!--  선택조회(글읽기)  -->
+		<select id="freeAndview" parameterType="java.lang.Integer" resultType="FreeDTO"> 
+			select * from free_board 
+			where free_board_num = #{free_board_num} 
+		</select>
+		
+	<!--  글 삭제 -->
+		<delete id="freeAnddelete"> 
+			delete from free_board
+			where free_board_num = #{free_board_num} 
+		</delete>
+		
+	<!--  글 수정하는 SQL "update" -->
+		<update id="freeAndupdateReadCnt" parameterType="FreeDTO"> 
+			update free_board set title=#{title} , content=#{content}, writer=#{writer}
+			where free_board_num = #{free_board_num} 
+		</update>
+	<!-- 게시물 총 갯수 -->
+		<select id="freecount" resultType="int">
+			select count(*) from free_board
+		</select>
+	<!-- 게시물 목록 + 페이징 -->
+		<select id="freelistPage" parameterType="hashMap" resultType="FreeDTO">
+			 select
+			  free_board_num, title, writer, regdate, count
+			 from free_board
+			 order by free_board_num desc
+			  limit #{displayPost}, #{postNum}
+		</select>
+		
+		
+		
+<!-- 공지사항 -->
+	<!--  전체목록   -->
+		<select id="noticeAndlist" resultType="NoticeDTO">
+			select * from notice_board
+			order by notice_num desc
+		</select>
+		
+	<!--  조회수 1 증가하는 SQL "count" -->
+		<update id="noticeAndcount">
+			update notice_board
+			set count = count + 1
+			where notice_num = #{notice_num}
+		</update>
+			
+	<!--  선택조회(글읽기)  -->
+		<select id="noticeAndview" parameterType="java.lang.Integer" resultType="NoticeDTO"> 
+			select * from notice_board 
+			where notice_num = #{notice_num} 
+		</select>
+		
+	<!-- 게시물 총 갯수 -->
+		<select id="noticecount" resultType="int">
+			select count(*) from notice_board
+		</select>
+	<!-- 게시물 목록 + 페이징 -->
+		<select id="noticelistPage" parameterType="hashMap" resultType="NoticeDTO">
+			 select
+			 notice_num, title, writer, regdate, count
+			 from notice_board
+			 order by  notice_num desc
+			 limit #{displayPost}, #{postNum}
+		</select>
+		
+		
+		
+<!-- Q&A -->
+	<!--  글 추가하는 SQL "insert" -->
+		<insert id="questionAndregister" parameterType="QuestionDTO"> 
+			insert into question_board(title, content, writer, regdate, count, etc) 
+			values (#{title}, #{content}, #{writer}, now(), 0, 0) 
+		</insert>
+		
+	<!--  전체목록   -->
+		<select id="questionAndlist" resultType="QuestionDTO">
+			select * from question_board
+			order by question_num desc
+		</select>
+		
+	<!--  조회수 1 증가하는 SQL "count" -->
+		<update id="questionAndcount">
+			update question_board
+			set count = count + 1
+			where question_num = #{question_num}
+		</update>
+		
+	<!--  선택조회(글읽기)  -->
+		<select id="questionAndview" parameterType="java.lang.Integer" resultType="QuestionDTO"> 
+			select * from question_board 
+			where question_num = #{question_num} 
+		</select>
+		
+	<!--  글 삭제 -->
+		<delete id="questionAnddelete"> 
+			delete from question_board
+			where question_num = #{question_num} 
+		</delete>
+		
+	<!--  글 수정하는 SQL "update" -->
+		<update id="questionAndupdateReadCnt" parameterType="QuestionDTO"> 
+			update question_board set title=#{title} , content=#{content}, writer=#{writer}
+			where question_num = #{question_num} 
+		</update>
+		
+	<!-- 게시물 총 갯수 -->
+		<select id="questioncount" resultType="int">
+			select count(*) from question_board
+		</select>
+		
+	<!-- 게시물 목록 + 페이징 -->
+		<select id="questionlistPage" parameterType="hashMap" resultType="QuestionDTO">
+			 select * from question_board
+			 order by question_num desc
+			  limit #{displayPost}, #{postNum}
+		</select>
+		
+		
+		
+		
+		
+<!-- 댓글  -->
+	<!--  게시글(번호)에 대한 댓글 조회하는 SQL(댓글리스트) -->
+		<select id="detail1" parameterType="java.lang.Integer" resultType="kr.co.dong.domain.CommentDTO">
+			 select * from comment where free_board_num =#{free_board_num} 
+		 </select>
+		 
+	<!--  댓글쓰기  -->
+		<insert id="reply" parameterType="kr.co.dong.domain.CommentDTO"> 
+			insert into comment (free_board_num, content, regdate, writer) 
+			values (#{free_board_num}, #{content}, curdate(), #{writer}) 
+		</insert>
+		
+	<!--  댓글수정  -->
+		<update id="replyupdate" parameterType="kr.co.dong.domain.CommentDTO"> 
+			update comment set writer = #{writer}, content = #{content}
+			where comment_num = #{comment_num} 
+		</update>
+		
+		
+	<!--   댓글 삭제  -->
+		<delete id="replyDelete" parameterType="int"> 
+			delete from comment
+			where comment_num = #{comment_num}
+		</delete>
+		
+	<!-- 게시글 + 댓글 삭제  -->
+		<delete id="Delete" parameterType="int">
+			delete from comment
+			where free_board_num =#{free_board_num} 
+		</delete>
+		
+   </mapper>

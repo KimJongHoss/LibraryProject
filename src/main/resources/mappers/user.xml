@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="kr.co.dong.mapper.user">
+  
+  	<select id="login" parameterType="java.util.Map" resultType="UserDTO">
+  		select userid, username, rankid
+  		from member
+  		where userid = #{userid} and userpassword = #{userpassword} 
+  	</select>
+  	
+  	<select id="cryptcheck" parameterType="String" resultType="String">
+  		select userpassword
+  		from member
+  		where userid = #{userid}
+  	</select>
+  	
+  	<insert id="member" parameterType="UserDTO">
+  		insert into 
+  		member (userid, useremail, rankid, userpassword, username, usergender, useraddress, userphonenum, userbirth, userjoinday)
+  		values (#{userid}, #{useremail}, 10, #{userpassword}, #{username}, #{usergender}, #{useraddress}, #{userphonenum}, #{userbirth}, now())
+  	</insert>
+  	
+  	<select id="idCheck" parameterType="String" resultType="Integer">
+  		select count(*)
+  		from member
+  		where userid = #{userid}
+  	</select>
+  	
+  	<select id="findid" parameterType="UserDTO" resultType="String">
+  		select userid
+  		from member
+  		where useremail = #{useremail} and username = #{username} and userphonenum = #{userphonenum}
+  	</select>
+  	
+  	<select id="forgotpassword" parameterType="UserDTO" resultType="String">
+  		select userpassword
+  		from member
+  		where userid = #{userid} and useremail = #{useremail} and userphonenum = #{userphonenum}
+  	</select>
+  	
+  	<update id="updatepassword" parameterType="userDTO">
+  		update member
+  		set userpassword = #{userpassword}
+  		where userid = #{userid}
+  	</update>
+  	
+  	<update id="infoupdate" parameterType="UserDTO">
+  		update member
+  		set useremail = #{useremail}, username = #{username}, userphonenum = #{userphonenum}, userbirth = #{userbirth}, useraddress = #{useraddress}
+  		where userid = #{userid}
+  	</update>
+  	
+  	<delete id="infodelete" parameterType="UserDTO">
+  		delete from member
+  		where userid = #{userid}
+  	</delete>
+  	
+  	<select id="infoauth" parameterType="String" resultType="Integer">
+  		select count(*)
+  		from member
+  		where userid = #{userid}
+  	</select>
+  	
+  	<select id="infolist" parameterType="UserDTO" resultType="UserDTO">
+  		select *
+  		from member
+  		where userid = #{userid}
+  	</select>
+  	
+  	<!-- 사서 로그인 -->
+  	<select id="loginmanager" parameterType="java.util.Map" resultType="LibrarianBean"> 
+  		select id, name, etc 
+  		from librarian 
+  		where id = #{id} and password = #{password} 
+  	</select>
+  	
+  </mapper>

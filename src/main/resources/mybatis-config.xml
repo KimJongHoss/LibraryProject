@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  	<typeAliases>
+  		<typeAlias alias="HomeBean" type="kr.co.dong.domain.HomeBean"/>
+  		<typeAlias alias="UserDTO" type="kr.co.dong.domain.UserDTO"/>
+  		<typeAlias alias="BookDTO" type="kr.co.dong.domain.BookBean"/>
+  		<typeAlias alias="BookListDTO" type="kr.co.dong.domain.BookListBean"/>
+  		<typeAlias alias="BookJoinDTO" type="kr.co.dong.domain.BookJoinDTO"/>
+  		<typeAlias alias="LoanDTO" type="kr.co.dong.domain.LoanDTO"/>
+  		<typeAlias alias="LoanDetailDTO" type="kr.co.dong.domain.LoanDetailDTO"/>
+  		<typeAlias alias="LoanJoinDTO" type="kr.co.dong.domain.LoanJoinDTO"/>
+  		<typeAlias alias="MarketListDTO" type="kr.co.dong.domain.MarketListDTO" />
+  		<typeAlias alias="InterBean" type="kr.co.dong.domain.InterBean"/>
+  		<typeAlias alias="DeliveryBean" type="kr.co.dong.domain.DeliveryBean"/>
+  		<typeAlias alias="LibraryBean" type="kr.co.dong.domain.LibraryBean"/>
+  		<typeAlias alias="LibrarianBean" type="kr.co.dong.domain.LibrarianBean"/>
+  		<typeAlias alias="toRegularBean" type="kr.co.dong.domain.toRegularBean"/>
+  		<typeAlias alias="saveOverdueBean" type="kr.co.dong.domain.saveOverdueBean"/>
+  		<typeAlias alias="saveBlacklistBean" type="kr.co.dong.domain.saveBlacklistBean"/>
+  		<typeAlias alias="FreeDTO" type="kr.co.dong.domain.FreeDTO"/>
+       <typeAlias alias="NoticeDTO" type="kr.co.dong.domain.NoticeDTO"/>
+       <typeAlias alias="QuestionDTO" type="kr.co.dong.domain.QuestionDTO"/>
+       <typeAlias alias="AnswerBean" type="kr.co.dong.domain.AnswerBean"/>
+       <typeAlias alias="SeatRoomDTO" type="kr.co.dong.domain.SeatRoomDTO"/>
+  	</typeAliases>
+</configuration>

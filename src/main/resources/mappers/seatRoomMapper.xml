@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.mappers.seatRoomMapper">
+
+	<!-- 좌석 전체조회하기 -->
+	<select id="list" resultType="SeatRoomDTO">
+		select * from seatroom
+	</select> 
+	
+	<!-- 좌석예약하기 -->
+	<update id="reservation" parameterType="SeatRoomDTO">
+		update seatroom set seat_status = #{status}, userid = #{userid} where seat_no = #{seat_no}
+	</update>
+	
+	<!-- 좌석수정하기 -->
+	<select id="modify" parameterType="SeatRoomDTO">
+		update seatroom
+			set
+				seat_status = #{status},
+				userid = #{userid},
+			where seat_no = #{seat_no} 
+	</select>
+	
+	<!-- 좌석취소하기 -->
+	<update id="cancel" parameterType="SeatRoomDTO">
+		update seatroom set seat_status = #{status}, userid = 'null' where seat_no = #{seat_no}
+	</update>
+	
+</mapper>
