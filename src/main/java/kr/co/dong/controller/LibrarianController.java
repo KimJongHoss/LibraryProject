@@ -53,14 +53,14 @@ public class LibrarianController {
 //		return "librarian/booklist";
 //	}
 	
-//	@GetMapping(value = "librarianRegularMemListAll")
-//	public String librarianRegularMemListAll(Model model) {
-//		logger.info("이곳은 사서 권한 정회원 전환 신청 전체 목록 보기입니다. ");
-//		List<toRegularBean> list = librarianService.toRegularlist();
-//		System.out.println(list);
-//		model.addAttribute("regular", list);
-//		return "librarian/regularMemListAll";
-//	}
+	@GetMapping(value = "librarianRegularMemListAll")
+	public String librarianRegularMemListAll(Model model) {
+		logger.info("이곳은 사서 권한 정회원 전환 신청 전체 목록 보기입니다. ");
+		List<toRegularBean> list = librarianService.toRegularlist();
+		System.out.println(list);
+		model.addAttribute("regular", list);
+		return "librarian/regularMemListAll";
+	}
 	
 	@GetMapping(value = "librarianRegularMemListOne")
 	public String librarianRegularMemListOne(@RequestParam("apply_code")int apply_code
